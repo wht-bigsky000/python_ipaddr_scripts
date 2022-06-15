@@ -59,6 +59,8 @@ def split_prefix(summary_prefix:list,exclude_prefix):
             # 在network_list中将汇总网段j,替换切分后的网段
             network_list.remove(j)
             network_list.extend(list(j.address_exclude(exclude_prefix)))
+            # 将拆分后的网段排序
+            network_list = sorted(network_list)
     return network_list
 
 if __name__ == '__main__':
@@ -83,7 +85,7 @@ if __name__ == '__main__':
     for exclude_prefix in exclude_prefix_list:
         summary_prefix_list = split_prefix(summary_prefix_list,exclude_prefix)
     # 将拆分后的网段排序
-    summary_prefix_list = sorted(summary_prefix_list)
+    # summary_prefix_list = sorted(summary_prefix_list)
     # summary_prefix_list.reverse()
     with open(os.path.join(script_dir,'split_results.txt'),'w+') as f:
         total_script = ''

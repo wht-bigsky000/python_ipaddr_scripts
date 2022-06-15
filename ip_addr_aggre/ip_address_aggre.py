@@ -21,6 +21,8 @@ script_dir = os.path.dirname(__file__)
 # 聚和函数,参数是IPv4Network类型的列表,里面是待聚和的网段
 def aggre_net(ip_prefix_list):
     collapse_prefix = ipaddress.collapse_addresses(ip_prefix_list)
+    # 对聚合网段排序
+    collapse_prefix = sorted(collapse_prefix)
     aggre_net_list = [ ipaddr for ipaddr in collapse_prefix ]
     return aggre_net_list
 

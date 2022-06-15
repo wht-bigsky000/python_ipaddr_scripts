@@ -1,3 +1,2 @@
 # 生成的txt文件
-split_net/*.txt
-ip_addr_aggre/*.txt
+*/*.txt
