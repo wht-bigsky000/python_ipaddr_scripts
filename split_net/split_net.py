@@ -21,12 +21,13 @@ script_dir = os.path.dirname(__file__)
 
 # 输入网段,返回IPv4Network类型列表exclude_prefix
 def input_exclude_addr()->list:
-    exclude_addr = input('请输入需要去除的网段,格式为X.X.X.X/X,多个地址段用空格分隔:\n')
+    exclude_addr = input('请输入需要去除的网段,格式为X.X.X.X/X,多个地址段用空格或,分隔:\n')
     while True:
         #去掉首尾空格
         exclude_addr = exclude_addr.strip()
         #以空格分隔
-        exclude_addr = exclude_addr.split(' ')
+        # exclude_addr = exclude_addr.split(' ')
+        exclude_addr = re.split(' |,', exclude_addr )
         #格式错误的网段数
         wrong_num = 0
         for ip_prefix in exclude_addr:
@@ -81,8 +82,9 @@ if __name__ == '__main__':
     # 在汇总网段列表中排除特定网段,获得最终拆分后的网段summary_prefix_list
     for exclude_prefix in exclude_prefix_list:
         summary_prefix_list = split_prefix(summary_prefix_list,exclude_prefix)
-    # 将拆分后的网段从小到大排序
-    summary_prefix_list.reverse()
+    # 将拆分后的网段排序
+    summary_prefix_list = sorted(summary_prefix_list)
+    # summary_prefix_list.reverse()
     with open(os.path.join(script_dir,'split_results.txt'),'w+') as f:
         total_script = ''
         for summary_prefix in summary_prefix_list:
