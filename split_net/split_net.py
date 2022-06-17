@@ -5,7 +5,7 @@ __author__ = 'wanghaotian'
 
 '''
 交互型切分网段:
-1.排序原始地址文件，自行观察哪些地址需要合并分割
+1.排序原始地址文件origin_ip.txt，自行观察哪些地址需要合并分割
 2.输入要合并到的汇总地址段，并从中剔除部分已占用子网
 3.对原始地址进行剔除合并，结果写入final_result.txt
 PS:如果想修改结果网段之间的分隔符,修改format全局变量
@@ -73,17 +73,17 @@ def split_prefix(summary_prefix:list,exclude_prefix)->list:
             # 在network_list中将汇总网段j,替换切分后的网段
             network_list.remove(j)
             network_list.extend(list(j.address_exclude(exclude_prefix)))
-            # 将拆分后的网段排序
-            # network_list = sorted(network_list)
     return network_list
 
 # 在原始网段中将部分网段替换为聚合拆分网段,返回IPv4Network类型的列表
 def replace_IPv4Network(origin_IPv4Network:list,summary_IPv4Network:list,splited_IPv4Network:list)->list:
     replaced_IPv4Network_list = list(origin_IPv4Network)
+    # 如果没有切分地址，将汇总地址赋给切分地址，最终将汇总地址并入原始地址
     if len(splited_IPv4Network) == 0:
         splited_IPv4Network_list = summary_IPv4Network
     else:
         splited_IPv4Network_list = splited_IPv4Network
+    # 删除原始地址中属于汇总地址的子网部分
     for IPv4Network in origin_IPv4Network:
         if IPv4Network.subnet_of(summary_IPv4Network[0]):
             replaced_IPv4Network_list.remove(IPv4Network)
@@ -97,6 +97,7 @@ if __name__ == '__main__':
     while True:
         if a == '1':
             ip_str = read_ip_file(origin_ip_file)
+            # 原始地址
             global origin_IPv4Network_list
             origin_IPv4Network_list = ip_str_to_IPv4Network(ip_str)
             write_ip_file(origin_ip_file,origin_IPv4Network_list)
@@ -145,11 +146,13 @@ if __name__ == '__main__':
                     else:
                         break
             exclude_IPv4Network_list = ip_str_to_IPv4Network(exclude_prefix_list)
-            # 在汇总网段列表中排除特定网段,获得最终拆分后的网段splited_IPv4Network_list
+            # 初始化拆分后的网段
             global splited_IPv4Network_list
             splited_IPv4Network_list = []
+            # 在汇总网段列表中排除特定网段,获得最终拆分后的网段splited_IPv4Network_list
             for exclude_IPv4Network in exclude_IPv4Network_list:
                 splited_IPv4Network_list = split_prefix(summary_IPv4Network_list,exclude_IPv4Network)
+            # 将拆分结果写入文件
             write_ip_file('split_results.txt',splited_IPv4Network_list)
             print('Done')
             a = input(short_banner)
