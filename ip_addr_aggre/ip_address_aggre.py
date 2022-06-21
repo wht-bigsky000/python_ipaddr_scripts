@@ -12,6 +12,8 @@ __author__ = 'wanghaotian'
 
 import ipaddress,re,os
 
+from numpy import append
+
 # 单引号中间的值是结果网段分隔符,\n表示回车
 format = '\n'
 
@@ -55,6 +57,12 @@ if __name__ == '__main__' :
                     ip_prefix_list.append(ipaddress.IPv4Network(line,strict=False))
                     num +=1
                 else:
+                    raise ValueError(f'line {num}: {line} format error!')
+            elif ip_pattern.fullmatch(line):
+                try:
+                    ip_prefix_list.append(ipaddress.IPv4Network(line,strict=False))
+                    num +=1
+                except:
                     raise ValueError(f'line {num}: {line} format error!')
             line = f.readline()
             # 去除行尾的\n和空格
