@@ -148,10 +148,12 @@ if __name__ == '__main__':
             exclude_IPv4Network_list = ip_str_to_IPv4Network(exclude_prefix_list)
             # 初始化拆分后的网段
             global splited_IPv4Network_list
-            splited_IPv4Network_list = []
+            # splited_IPv4Network_list = []
+            splited_IPv4Network_list = summary_IPv4Network_list
             # 在汇总网段列表中排除特定网段,获得最终拆分后的网段splited_IPv4Network_list
             for exclude_IPv4Network in exclude_IPv4Network_list:
-                splited_IPv4Network_list = split_prefix(summary_IPv4Network_list,exclude_IPv4Network)
+                # splited_IPv4Network_list = split_prefix(summary_IPv4Network_list,exclude_IPv4Network)
+                splited_IPv4Network_list = split_prefix(splited_IPv4Network_list,exclude_IPv4Network)
             # 将拆分结果写入文件
             write_ip_file('split_results.txt',splited_IPv4Network_list)
             print('Done')
